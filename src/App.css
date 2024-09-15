@@ -1,10 +1,3 @@
-/* 
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: false },
-];
-*/
-
 @import url("https://fonts.googleapis.com/css2?family=Monoton&family=Quicksand:wght@500;700&display=swap");
 
 * {
@@ -29,7 +22,8 @@ body {
   width: 100%;
   height: 100vh;
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto; /* Layout structure */
+  position: relative;
 }
 
 h1 {
@@ -76,44 +70,34 @@ input {
   text-transform: uppercase;
   background-color: #76c7ad;
 }
+
 .list {
   background-color: #5a3e2b;
   color: #ffebb3;
   padding: 4rem 0;
-  width: 100%; /* Ensure the list takes up the full width */
+  display: block;
 }
 
 .list ul {
   list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid; /* Grid layout is more suitable for responsive alignment */
+  width: 100%; /* Set to 100% for full width */
+  overflow-y: auto; /* Enable vertical scroll only if necessary */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  
+  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem; /* Adjust the gap between items */
-  justify-content: center;
+  gap: 1.2rem;
+  justify-content: center; /* This centers the grid items */
+  align-content: start; /* Align grid content to the start */
 }
 
 .list li {
-  background-color: #e5771f; /* You can style individual items */
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  background-color: #e5771f;
   padding: 1.2rem;
   border-radius: 0.8rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.list li span {
-  flex-grow: 1; /* This makes the text expand to fill the available space */
-}
-
-
-.actions button,
-.list select {
-  text-transform: uppercase;
-  padding: 0.8rem 2.4rem;
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin: 0 0.8rem;
 }
 
 input[type="checkbox"] {
@@ -136,4 +120,21 @@ input[type="checkbox"] {
   text-align: center;
   font-weight: 700;
   padding: 3.2rem 0;
+}
+
+/* Position the actions at the top of the footer, centrally aligned */
+.actions-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.6rem; /* Space between the button and select */
+  margin-bottom: 2rem; /* Add some space above the footer */
+}
+
+.actions button,
+.actions select {
+  text-transform: uppercase;
+  padding: 0.8rem 2.4rem;
+  font-size: 1.4rem;
+  font-weight: 700;
 }

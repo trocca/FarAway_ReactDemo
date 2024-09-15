@@ -41,13 +41,42 @@ const Form = ({ onAddItems }) => {
   )
 }
 
-const PackagingList = ({ items, onDeleteItem, onToggleItem }) => {
+const PackagingList = ({ items, onDeleteItem, onToggleItem, onClearList }) => {
+
+  const [sortBy, setSortBy] = useState('orderInput');
+
+  let sortedItems;
+
+  switch (sortBy) {
+    case 'orderPackedAZ':
+      sortedItems = [...items].sort((a, b) => a.packed - b.packed || a.description.localeCompare(b.description));
+      break;
+    case 'orderAllAZ':
+      sortedItems = [...items].sort((a, b) => a.description.localeCompare(b.description));
+      break;
+    default:
+      sortedItems = items;
+  }
+
   return (
-    <div className="list">
-      <ul>
-        {items.map(item => (<Item key={item.id} item={item} onDeleteItem={onDeleteItem} onToggleItem={onToggleItem} />))}
-      </ul>
-    </div>
+    <>
+      <div className="list">
+        <ul>
+          {sortedItems.map(item => (<Item key={item.id} item={item} onDeleteItem={onDeleteItem} onToggleItem={onToggleItem} />))}
+        </ul>
+      </div>
+      <div className="actions-container">
+        <div className="actions">
+          Sort by
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <option value='orderInput'>Input Order (default)</option>
+            <option value='orderAllAZ'>A-Z</option>
+            <option value='orderPackedAZ'>Packed Items</option>
+          </select>
+        </div>
+        <button onClick={onClearList}>Clear List</button>
+      </div>
+    </>
   )
 }
 
@@ -69,6 +98,10 @@ function Item({ item, onDeleteItem, onToggleItem }) {
 
 function Stats({ items }) {
 
+  if (!items.length) return (
+    <footer className="stats">No items on the list yet. Ready to pack?</footer>
+  );
+
   const totalItems = items.length;
   const totalPackedItems = items.filter(item => item.packed).length;
   const totalPiecesInSuitcase = items.reduce((acc, item) => acc + item.quantity, 0);
@@ -77,9 +110,9 @@ function Stats({ items }) {
   return (
     <footer className="stats">
       <em>
-      {percentagePacked === 100 
-        ? '🛫 All packed and ready to go!🛬'
-        : `You have ${+totalItems} items on list, and you are already packed ${+totalPackedItems} (${percentagePacked}%) - Total pcs. ${totalPiecesInSuitcase}`}
+        {percentagePacked === 100
+          ? '🛫 All packed and ready to go!🛬'
+          : `You have ${+totalItems} items on list, and you are already packed ${+totalPackedItems} (${percentagePacked}%) - Total pcs. ${totalPiecesInSuitcase}`}
       </em>
     </footer>
   )
@@ -109,12 +142,17 @@ function App() {
     setItems(items => items.map(item => item.id === id ? { ...item, packed: !item.packed } : item));
   }
 
+  const handleClearList = () => {
+    console.log("Clearing list...");
+    setItems([]);
+  }
+
 
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackagingList items={items} onDeleteItem={handleDeleteItem} onToggleItem={handleToggleItem} />
+      <PackagingList items={items} onDeleteItem={handleDeleteItem} onToggleItem={handleToggleItem} onClearList={handleClearList}/>
       <Stats items={items} />
     </div>
   )
