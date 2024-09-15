@@ -54,7 +54,7 @@ const PackagingList = ({ items, onDeleteItem, onToggleItem }) => {
 function Item({ item, onDeleteItem, onToggleItem }) {
   return (
     <li>
-      <input type="checkbox" checked={item.packed} onChange={ () => onToggleItem(item.id)}/>
+      <input type="checkbox" checked={item.packed} onChange={() => onToggleItem(item.id)} />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.description} - Quantity: {item.quantity} {item.packed ?
           "✅" :
@@ -67,8 +67,8 @@ function Item({ item, onDeleteItem, onToggleItem }) {
 }
 
 
-function Stats({items}) {
-  
+function Stats({ items }) {
+
   const totalItems = items.length;
   const totalPackedItems = items.filter(item => item.packed).length;
   const totalPiecesInSuitcase = items.reduce((acc, item) => acc + item.quantity, 0);
@@ -76,7 +76,11 @@ function Stats({items}) {
 
   return (
     <footer className="stats">
-      <em>`You have {+totalItems} items on list, and you are already packed {+totalPackedItems} ({percentagePacked}%) - Total pcs. {totalPiecesInSuitcase}`</em>
+      <em>
+      {percentagePacked === 100 
+        ? '🛫 All packed and ready to go!🛬'
+        : `You have ${+totalItems} items on list, and you are already packed ${+totalPackedItems} (${percentagePacked}%) - Total pcs. ${totalPiecesInSuitcase}`}
+      </em>
     </footer>
   )
 }
@@ -86,9 +90,6 @@ function App() {
 
   const [items, setItems] = useState([]);
 
-  // const totalPackedItems = items.reduce((acc, item) => item.packed ? acc + item.quantity : acc, 0);
-
-
   const handleAddItems = (item) => {
     setItems(items => [...items, item]);
 
@@ -96,7 +97,7 @@ function App() {
     return
   }
 
-  
+
   const handleDeleteItem = (id) => {
     console.log("Delete item with id:", id);
     setItems(items => items.filter(item => item.id !== id));
@@ -105,7 +106,7 @@ function App() {
 
   const handleToggleItem = (id) => {
     console.log("Toggled item with id:", id);
-    setItems(items => items.map(item => item.id === id ? {...item, packed: !item.packed} : item));
+    setItems(items => items.map(item => item.id === id ? { ...item, packed: !item.packed } : item));
   }
 
 
@@ -113,7 +114,7 @@ function App() {
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackagingList items={items} onDeleteItem={handleDeleteItem} onToggleItem={handleToggleItem}/>
+      <PackagingList items={items} onDeleteItem={handleDeleteItem} onToggleItem={handleToggleItem} />
       <Stats items={items} />
     </div>
   )
