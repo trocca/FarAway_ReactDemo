@@ -67,10 +67,11 @@ function Item({ item, onDeleteItem, onToggleItem }) {
 }
 
 
-function Stats() {
+function Stats({totalItems, totalPackedItems}) {
+  const percentagePacked = totalItems === 0 ? 0 : Math.round((totalPackedItems / totalItems) * 100);
   return (
     <footer className="stats">
-      <em>You have X items on your list, and you are already packes X (X%)</em>
+      <em>`You have {+totalItems} items on your list, and you are already packed {+totalPackedItems} ({percentagePacked}%)`</em>
     </footer>
   )
 }
@@ -79,6 +80,9 @@ function Stats() {
 function App() {
 
   const [items, setItems] = useState([]);
+
+  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
+  const totalPackedItems = items.reduce((acc, item) => item.packed ? acc + item.quantity : acc, 0);
 
 
   const handleAddItems = (item) => {
@@ -106,7 +110,7 @@ function App() {
       <Logo />
       <Form onAddItems={handleAddItems} />
       <PackagingList items={items} onDeleteItem={handleDeleteItem} onToggleItem={handleToggleItem}/>
-      <Stats />
+      <Stats totalItems={totalItems} totalPackedItems={totalPackedItems}/>
     </div>
   )
 }
