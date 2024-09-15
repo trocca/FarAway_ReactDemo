@@ -26,6 +26,7 @@ const Form = ({ onAddItems }) => {
     setQuantity(1);
   }
 
+
   return (
     <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need for your trip? 😎</h3>
@@ -40,21 +41,24 @@ const Form = ({ onAddItems }) => {
   )
 }
 
-const PackagingList = ({ items }) => {
+const PackagingList = ({ items, onDeleteItem }) => {
   return (
     <div className="list">
       <ul>
-        {items.map(item => (<Item key={item.id} item={item} />))}
+        {items.map(item => (<Item key={item.id} item={item} onDeleteItem={onDeleteItem} />))}
       </ul>
     </div>
   )
 }
 
-function Item({ item }) {
+function Item({ item, onDeleteItem }) {
   return (
     <li>
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
-        {item.description} - Quantity: {item.quantity} {item.packed ? "✅" : "❌"}
+        {item.description} - Quantity: {item.quantity} {item.packed ?
+          "✅" :
+          <button onClick={() => onDeleteItem(item.id)}>❌</button>
+        }
       </span>
       {/* <input type="checkbox" checked={item.packed} /> */}
     </li>
@@ -83,12 +87,19 @@ function App() {
     return
   }
 
+  
+  const handleDeleteItem = (id) => {
+    console.log("Delete item with id:", id);
+    setItems(items => items.filter(item => item.id !== id));
+
+  }
+
 
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackagingList items={items} />
+      <PackagingList items={items} onDeleteItem={handleDeleteItem} />
       <Stats />
     </div>
   )
