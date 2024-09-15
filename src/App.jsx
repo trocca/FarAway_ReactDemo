@@ -41,19 +41,20 @@ const Form = ({ onAddItems }) => {
   )
 }
 
-const PackagingList = ({ items, onDeleteItem }) => {
+const PackagingList = ({ items, onDeleteItem, onToggleItem }) => {
   return (
     <div className="list">
       <ul>
-        {items.map(item => (<Item key={item.id} item={item} onDeleteItem={onDeleteItem} />))}
+        {items.map(item => (<Item key={item.id} item={item} onDeleteItem={onDeleteItem} onToggleItem={onToggleItem} />))}
       </ul>
     </div>
   )
 }
 
-function Item({ item, onDeleteItem }) {
+function Item({ item, onDeleteItem, onToggleItem }) {
   return (
     <li>
+      <input type="checkbox" checked={item.packed} onChange={ () => onToggleItem(item.id)}/>
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.description} - Quantity: {item.quantity} {item.packed ?
           "✅" :
@@ -81,7 +82,7 @@ function App() {
 
 
   const handleAddItems = (item) => {
-    setItems(items => [item, ...items]);
+    setItems(items => [...items, item]);
 
     console.log("Items:", items);
     return
@@ -94,12 +95,17 @@ function App() {
 
   }
 
+  const handleToggleItem = (id) => {
+    console.log("Toggled item with id:", id);
+    setItems(items => items.map(item => item.id === id ? {...item, packed: !item.packed} : item));
+  }
+
 
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackagingList items={items} onDeleteItem={handleDeleteItem} />
+      <PackagingList items={items} onDeleteItem={handleDeleteItem} onToggleItem={handleToggleItem}/>
       <Stats />
     </div>
   )
